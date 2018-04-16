@@ -1,0 +1,8 @@
+<ul id="members">
+<li ng-repeat="m in members | orderBy:'name':false">
+    <a ng-click="loadMember(m.id)">{{ m.name }}</a>
+</li>
+</ul>
+<div id="member" ng-if="member">
+    <h1>{{member.name}}</h1>
+</div>

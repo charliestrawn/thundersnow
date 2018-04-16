@@ -1,0 +1,102 @@
+<header class="navbar navbar-default navber-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Payment Reporter</a>
+        </div>
+
+            <nav class="collapse navbar-collapse bs-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="" ng-click="newWeek()">New Week</a>
+                    </li>
+                    <li>
+                        <a href="" data-toggle="dropdown">Change Year<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li ng-click="loadPayments(2014)"><a>2014</a></li>
+                            <li ng-click="loadPayments(2015)"><a>2015</a></li>
+                            <li ng-click="loadPayments(2016)"><a>2016</a></li>
+                            <li ng-click="loadPayments(2017)"><a>2017</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="" data-toggle="dropdown">Generate Report<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/#/report/weekly/{{ week | encodeURIComponent }}">For This Week</a></li>
+                            <li><a href="/#/report/annual/2014">For 2014</a></li>
+                            <li><a href="/#/report/annual/2015">For 2015</a></li>
+                            <li><a href="/#/report/annual/2016">For 2016</a></li>
+                            <li><a href="/#/report/annual/2017">For 2017</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li ng-if="isAdmin()">
+                        <a href="" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-cog" style="cursor:pointer">
+                            </span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/#/users">Manage Users</a></li>
+                            <li><a href="/#/members">Manage Members</a></li>
+                            <li><a href="/#/weeks">Manage Weeks</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="" ng-click="logout()">Logout</a></li>
+                </ul>
+            </nav>
+    </div>
+</header>
+
+<div class="container">
+<div class="row">
+    <div class="col-sm-4">
+        <form id="addForm" name="addForm" ng-submit="createPayment(payment)" auto-focus>
+            <legend>Add Payment</legend>
+            <div class="form-group">
+                <label class="control-label">Date</label>
+                <select class="form-control" name="date" ng-model="week" ng-options="w for w in weeks" ng-change="getWeeklyPayments(week)"></select>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : addForm.name.$invalid && !addForm.name.$pristine }">
+                <label class="control-label">Name</label>
+                <input type="text" class="form-control" name="name" ng-model="payment.name" typeahead="name for name in names | filter:$viewValue | limitTo:8" required>
+                <p ng-show="addForm.name.$invalid && !addForm.name.$pristine" class="help-block">Name is required.</p>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : addForm.checkNumber.$invalid && !addForm.checkNumber.$pristine }">
+                <label class="control-label">Check Number</label>
+                <input type="text" class="form-control" name="checkNumber" ng-model="payment.checkNumber" required>
+                <p ng-show="addForm.checkNumber.$invalid && !addForm.checkNumber.$pristine" class="help-block">Check number is required.</p>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : addForm.amount.$invalid && !addForm.amount.$pristine }">
+                <label class="control-label">Amount</label>
+                <input type="text" class="form-control" name="amount" ng-model="payment.amount" required>
+                <p ng-show="addForm.amount.$invalid && !addForm.amount.$pristine" class="help-block">Amount is required.</p>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-8">
+        <h3>Payments for week of {{ week }}</h3>
+        <table class="table table-striped">
+            <thead>
+                <th>Name</th>
+                <th class="text-right">Check #</th>
+                <th class="text-right">Amount</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr  ng-repeat="payment in payments | orderBy:'name':false">
+                    <td>{{ payment.name }}</td>
+                    <td class="text-right">{{ payment.checkNumber }}</td>
+                    <td class="text-right">{{ payment.amount | currency}}</td>
+                    <td></td>
+                    <td><span class="glyphicon glyphicon-pencil" style="cursor:pointer" ng-click="populateUpdateForm(payment)"></span> </td>
+                    <td><span class="glyphicon glyphicon-remove" style="color:firebrick;cursor:pointer" ng-click="del(payment)"></span> </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>

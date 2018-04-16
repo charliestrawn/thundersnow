@@ -1,0 +1,57 @@
+li.date-list-item {
+    text-decoration: none;
+    margin: 10px;
+}
+
+.loader{
+    width: 300px;
+    height: 300px;
+    border: 15px purple solid;
+    border-radius: 50%;
+    -webkit-animation: rotation 1s ease-in-out infinite;
+       -moz-animation: rotation 1s ease-in-out infinite;
+            animation: rotation 1s ease-in-out infinite;
+    margin: 20% auto;
+}
+
+.box h1 {
+    color: purple;
+    margin: 5% auto;
+}
+
+.loader:after{
+    width: 60px;
+    height: 60px;
+    background-color: rgba(130,0,130,1);
+    border-radius: 50%;
+    position: absolute;
+    content: "";
+}
+
+@-webkit-keyframes rotation{
+    0%{-webkit-transform: rotate(0deg);}
+    100%{-webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes rotation{
+    0%{-moz-transform: rotate(0deg);}
+    100%{-moz-transform: rotate(360deg);}
+}
+@keyframes rotation{
+    0%{transform: rotate(0deg);}
+    100%{transform: rotate(360deg);}
+}
+
+@media print {
+    .report {
+        page-break-after: always;
+    }
+}
+
+header.update {
+    padding: 10px;
+}
+
+header.update span {
+    width: 970px;
+    margin: auto;
+}

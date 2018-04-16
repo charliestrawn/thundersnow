@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="box" ng-show="loading">
+        <div class="loader"></div>
+        <h1>LOADING...</h1>
+    </div>
+    <div ng-repeat="g in grouped" class="report">
+        <h1>St. Charles Parish Tithing Report {{ year }}</h1>
+        <h2>{{ g.name }}</h2>
+        <p>Thank you for supporting St Charles Parish this year.  
+            If you have any corrections, please contact Financial 
+            Secretary Kristy Meints-Fetch at stcharlesparish@live.com.</p>
+        <table class="table table-condensed">
+            <thead>
+                <th>Date</th>
+                <th>Check #</th>
+                <th>Amount</th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="payment in g.payments | orderBy:'date':false">
+                <td>{{ formatDate(payment.date) }}</td>
+                <td>{{ payment.checkNumber }}</td>
+                <td>{{ payment.amount | currency }}</td>
+            </tr>
+            <tr>
+                <td><strong>Total :</strong></td>
+                <td></td>
+                <td><strong>{{ g.total | currency }}</strong></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

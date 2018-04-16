@@ -1,0 +1,25 @@
+<div class="container">
+    <h1>St. Charles Parish Tithing Report</h1>
+    <h2>Payments for week of {{ week }}</h2>
+    <br>
+    <br>
+    <table class="table">
+        <thead>
+        <th>Name</th>
+        <th class="text-right">Check #</th>
+        <th class="text-right">Amount</th>
+        </thead>
+        <tbody>
+        <tr  ng-repeat="payment in payments | orderBy:'name':false">
+            <td>{{payment.name}}</td>
+            <td class="text-right">{{payment.checkNumber}}</td>
+            <td class="text-right">$ {{payment.amount.toFixed(2)}}</td>
+        </tr>
+        <tr>
+            <td><strong>Total :</strong></td>
+            <td></td>
+            <td class="text-right"><strong>$ {{ total }}</strong></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
