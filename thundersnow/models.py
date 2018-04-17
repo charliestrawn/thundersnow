@@ -122,9 +122,10 @@ class Payment(db.Model):
     week_id = db.Column(db.Integer, ForeignKey('weeks.id'))
     entered_by = db.Column(db.Integer, ForeignKey('users.id'))
 
-    def __init__(self, check_number, amount):
+    def __init__(self, check_number, amount, entered_by):
         self.check_number = check_number
         self.amount = amount
+        self.entered_by = entered_by
 
     def __repr__(self):
         return '<Payment {} {} {} {}'.format(self.week, self.check_number,
