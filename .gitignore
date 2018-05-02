@@ -20,3 +20,5 @@ bower_components
 *.swp
 secrets.sh
 backup.json
+
+static/node_modules

@@ -6,10 +6,12 @@ import pylev
 
 from flask import abort, Flask, jsonify, redirect, request, session, url_for
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
+CORS(app)
 
 dev_config = 'thundersnow.config.DevelopmentConfig'
 app_settings = os.getenv('APP_SETTINGS', dev_config)
@@ -274,7 +276,7 @@ def api_payments():
         payment = Payment(
             check_number=check_number,
             amount=amount,
-            entered_by=session['logged_in_user']
+            entered_by=session.get('logged_in_user', 1)
         )
 
         week.payments.append(payment)
