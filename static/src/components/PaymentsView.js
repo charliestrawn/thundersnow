@@ -39,13 +39,17 @@ class PaymentsView extends Component {
             .then(paymentData => this.setState({payments: paymentData}))
     }
 
+    updatePayments (payment) {
+        this.setState({payments: [...this.state.payments, payment]})
+    }
+
+    editPaymentClicked (payment) {
+        alert(payment);
+    }
+
     changeWeek (week) {
         this.setState({week: week})
         this.fetchPayments(this.state.week);
-    }
-
-    updatePayments (payment) {
-        this.setState({payments: [...this.state.payments, payment]})
     }
 
     updateWeeks(week) {
@@ -72,12 +76,20 @@ class PaymentsView extends Component {
             </div>
             <div className="row">
             <div className="col-sm-4">
-                <WeekForm week={this.state.week} weeks={this.state.weeks} changeWeek={this.changeWeek} updateWeeks={this.updateWeeks} />
-                <PaymentForm week={this.state.week} updatePayments={this.updatePayments}/>
+                <WeekForm
+                    week={this.state.week}
+                    weeks={this.state.weeks}
+                    changeWeek={this.changeWeek}
+                    updateWeeks={this.updateWeeks} />
+                <PaymentForm
+                    week={this.state.week}
+                    updatePayments={this.updatePayments}/>
             </div>
             <div className="col-sm-8">
-                <h3>Payments for the week of {this.state.week}</h3>
-                <PaymentsTable payments={this.state.payments} />
+                <h3>Payments for {this.state.week}</h3>
+                <PaymentsTable
+                    payments={this.state.payments}
+                    editPaymentClick={this.editPaymentClicked} />
             </div>
             </div>
         </div>

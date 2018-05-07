@@ -17,7 +17,7 @@ class PaymentsTable extends Component {
                 <td className="text-right">{payment.checkNumber}</td>
                 <td className="text-right">{payment.amount}</td>
                 <td></td>
-                <td><span className="glyphicon glyphicon-pencil"></span> </td>
+                <td><span className="glyphicon glyphicon-pencil" onClick={() => this.props.editPaymentClick(payment)}></span> </td>
                 <td><span className="glyphicon glyphicon-remove"></span> </td>
             </tr>
         ))
