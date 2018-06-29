@@ -2,12 +2,13 @@ from functools import wraps
 import datetime
 import itertools
 import os
-import pylev
+import time
 
 from flask import abort, Flask, jsonify, redirect, request, session, url_for
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+import pylev
 
 
 app = Flask(__name__)
@@ -142,13 +143,13 @@ def api_weeks():
         week = Week(week_arr[0], week_arr[1], week_arr[2])
         db.session.add(week)
         db.session.commit()
-        return jsonify(str(week))
+        return jsonify(week.serialize)
     else:
         year = datetime.datetime.now().year
         if request.args.get('year') and 'undefined' != request.args['year']:
             year = request.args['year']
         weeks = Week.query.filter_by(year=year).all()
-        return jsonify([str(w) for w in weeks])
+        return jsonify([w.serialize for w in weeks])
 
 
 @app.route('/api/members')
@@ -311,6 +312,12 @@ def api_payment(payment_id):
         db.session.commit()
         return "Successfully deleted payment", 204
 
+
+@app.route('/backup', methods=['POST'])
+@login_required
+def backup():
+    payments = Payment.query.all()
+    date = time.strftime("%m-%d-%Y")
 
 def split_json_date(date_str):
     """

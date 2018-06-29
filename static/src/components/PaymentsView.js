@@ -25,12 +25,12 @@ class PaymentsView extends Component {
     initialize () {
         fetch('http://localhost:5000/api/weeks?year=2017')
         .then(res => res.json())
-        .then(
-            weeksData => {
+        .then(weeksData => {
                 const sortedWeeks = this.sortWeeks(weeksData);
                 this.setState({weeks: sortedWeeks, week: sortedWeeks[0]});
                 this.fetchPayments(this.state.week);
-            });
+            }
+        );
     }
 
     fetchPayments (week) {
@@ -61,11 +61,9 @@ class PaymentsView extends Component {
         return weeks.sort(function(a, b){
             var monthA = parseInt(a.split('-')[0], 10);
             var monthB = parseInt(b.split('-')[0], 10);
-            if (monthB < monthA) //sort string ascending
-                return -1;
-            if (monthB > monthA)
-                return 1;
-            return 0; //default return value (no sorting)
+            if (monthB < monthA) return -1;
+            if (monthB > monthA) return 1;
+            return 0;
         });
     }
 

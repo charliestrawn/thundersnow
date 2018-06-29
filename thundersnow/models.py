@@ -78,6 +78,7 @@ class User(db.Model):
     @property
     def serialize(self):
         return {
+            'id': self.id,
             'email': self.email,
             'admin': self.admin,
             'registered_on': self.registered_on
@@ -165,6 +166,14 @@ class Week(db.Model):
     def __repr__(self):
         return '{m}-{d}-{y}'.format(m=self.month, d=self.day, y=self.year)
 
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'month': self.month,
+            'day': self.day,
+            'year': self.year
+        }
 
 class BlacklistToken(db.Model):
     """

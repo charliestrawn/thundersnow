@@ -6,7 +6,7 @@
             return AuthService.isAdmin();
         };
 
-        $scope.loadPayments = function (year) {
+        $scope.loadPayments = function loadPayments(year) {
             if (typeof year != 'undefined') {
                 dateService.getWeeks(year).success(function (weeks) {
                     $scope.weeks = weeks;
@@ -15,8 +15,10 @@
                 });
             } else {
                 dateService.getWeeks(2017).success(function (weeks) {
-                    $scope.weeks = weeks;
-                    $scope.week = weeks[0];
+                    $scope.weeks = _.map(weeks, function(week) {
+                        return week.month + '-' + week.day + '-' + week.year;
+                    });
+                    $scope.week = $scope.weeks[0];
                     $scope.getWeeklyPayments($scope.week);
                 });
             }
