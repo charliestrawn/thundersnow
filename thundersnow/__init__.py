@@ -1,12 +1,15 @@
 from functools import wraps
 import datetime
 import itertools
+import json
 import os
-import pylev
+import time
 
+import boto3
 from flask import abort, Flask, jsonify, redirect, request, session, url_for
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+import pylev
 
 
 app = Flask(__name__)
@@ -308,6 +311,20 @@ def api_payment(payment_id):
         db.session.delete(payment)
         db.session.commit()
         return "Successfully deleted payment", 204
+
+
+@app.route('/backup', methods=['POST'])
+@login_required
+def backup():
+    payments = Payment.query.join(Week).filter(Week.year == 2018).all()
+    pmts = [p.serialize for p in payments]
+    date = time.strftime("%m-%d-%Y")
+    s3 = boto3.resource('s3')
+    file_name = f'test-offering-backup-{date}'
+    s3_obj = s3.Object('thundersnow-v2-bak', file_name)
+    resp = s3_obj.put(Body=json.dumps(pmts))
+    print(resp)
+    return f'Successfully uploaded {file_name}', 200
 
 
 def split_json_date(date_str):

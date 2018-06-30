@@ -16,6 +16,7 @@
                             <li ng-click="loadPayments(2015)"><a>2015</a></li>
                             <li ng-click="loadPayments(2016)"><a>2016</a></li>
                             <li ng-click="loadPayments(2017)"><a>2017</a></li>
+                            <li ng-click="loadPayments(2018)"><a>2018</a></li>
                         </ul>
                     </li>
                     <li>
@@ -26,6 +27,7 @@
                             <li><a href="/#/report/annual/2015">For 2015</a></li>
                             <li><a href="/#/report/annual/2016">For 2016</a></li>
                             <li><a href="/#/report/annual/2017">For 2017</a></li>
+                            <li><a href="/#/report/annual/2018">For 2018</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -74,9 +76,13 @@
                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
             </div>
         </form>
+        <hr />
+        <button class="btn btn-default btn-block">Export</button>
     </div>
     <div class="col-sm-8">
-        <h3>Payments for week of {{ week }}</h3>
+        <div class="row">
+            <h3 class="pull-left">Payments for {{ week }}</h3>
+        </div>
         <table class="table table-striped">
             <thead>
                 <th>Name</th>

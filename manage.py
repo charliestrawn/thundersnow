@@ -49,9 +49,7 @@ def create_admin():
     admin_password = os.getenv('ADMIN_PASSWORD')
     if admin_email and admin_password:
         admin_user = User(
-            email=admin_email,
-            password=admin_password,
-            admin=True
+            email=admin_email, password=admin_password, admin=True
         )
         db.session.add(admin_user)
 
@@ -59,8 +57,7 @@ def create_admin():
     user_password = os.getenv('USER_PASSWORD')
     if user_email and user_password:
         user = User(
-            email=user_email,
-            password=user_password
+            email=user_email, password=user_password
         )
         db.session.add(user)
 
@@ -85,9 +82,7 @@ def create_data(file_name='backup.json'):
             month, day, year = split_json_date(payment.get('date'))
 
             week = Week.query.filter_by(
-                month=month,
-                day=day,
-                year=year
+                month=month, day=day, year=year
             ).first()
             if not week:
                 week = Week(month=month, day=day, year=year)
@@ -103,8 +98,9 @@ def create_data(file_name='backup.json'):
 
             # Convert to cents
             amount = payment.get('amount') * 100
-            payment = Payment(check_number=check_number, amount=amount)
-
+            payment = Payment(
+                check_number=check_number, amount=amount, entered_by=1
+            )
             week.payments.append(payment)
             member.payments.append(payment)
 
@@ -140,8 +136,7 @@ def test():
     Runs the unit tests without test coverage.
     """
     tests = unittest.TestLoader().discover(
-        'thundersnow/tests',
-        pattern='test*.py'
+        'thundersnow/tests', pattern='test*.py'
     )
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():

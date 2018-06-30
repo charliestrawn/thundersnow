@@ -3,6 +3,8 @@ appdirs==1.4.3
 astroid==1.6.3
 bcrypt==3.1.1
 blinker==1.4
+boto3==1.7.48
+botocore==1.10.48
 cffi==1.9.1
 dominate==2.2.1
 Flask==0.11.1

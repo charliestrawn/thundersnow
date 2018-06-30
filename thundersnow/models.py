@@ -73,7 +73,7 @@ class User(db.Model):
             return 'Invalid token. Please log in again.'
 
     def __repr__(self):
-        return '<User {0}>'.format(self.email)
+        return f'<User {self.email}>'
 
     @property
     def serialize(self):
@@ -128,8 +128,8 @@ class Payment(db.Model):
         self.entered_by = entered_by
 
     def __repr__(self):
-        return '<Payment {} {} {} {}'.format(self.week, self.check_number,
-                                             self.amount, self.member.name)
+        return f'<Payment {self.week} {self.check_number}' + \
+               f'{self.amount} {self.member.name}'
 
     @property
     def serialize(self):
@@ -163,7 +163,7 @@ class Week(db.Model):
         self.year = year
 
     def __repr__(self):
-        return '{m}-{d}-{y}'.format(m=self.month, d=self.day, y=self.year)
+        return f'{self.month}-{self.day}-{self.year}'
 
 
 class BlacklistToken(db.Model):
@@ -181,7 +181,7 @@ class BlacklistToken(db.Model):
         self.blacklisted_on = datetime.now()
 
     def __repr__(self):
-        return '<id: token: {}'.format(self.token)
+        return f'<id: token: {self.token}'
 
     @staticmethod
     def check_blacklist(auth_token):

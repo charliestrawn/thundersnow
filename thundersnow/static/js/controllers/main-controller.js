@@ -14,7 +14,7 @@
                     $scope.getWeeklyPayments($scope.week);
                 });
             } else {
-                dateService.getWeeks(2017).success(function (weeks) {
+                dateService.getWeeks(2018).success(function (weeks) {
                     $scope.weeks = weeks;
                     $scope.week = weeks[0];
                     $scope.getWeeklyPayments($scope.week);
