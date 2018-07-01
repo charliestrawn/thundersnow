@@ -93,6 +93,7 @@ class Member(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(200), unique=True, nullable=False)
     payments = relationship('Payment', backref='member')
+    # breeze_id = db.Column(db.Integer, nullable=True)
 
     def __init__(self, name):
         self.name = name

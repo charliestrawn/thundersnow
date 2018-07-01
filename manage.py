@@ -11,6 +11,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from thundersnow import app, db
 from thundersnow.models import Member, Payment, User, Week
+from thundersnow.utils import split_json_date
 
 
 MIGRATE = Migrate(app, db)
@@ -142,17 +143,6 @@ def test():
     if result.wasSuccessful():
         return 0
     return 1
-
-
-def split_json_date(date_str):
-    """
-    Turn a date string formatted like mm-dd-YYYY into a datetime.date obj.
-    """
-    date_array = date_str.split('-')
-    month = int(date_array[0])
-    day = int(date_array[1])
-    year = int(date_array[2])
-    return month, day, year
 
 
 if __name__ == '__main__':
