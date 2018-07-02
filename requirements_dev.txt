@@ -1,5 +1,4 @@
 flake8
 coverage
-click
 
 -r requirements.txt
