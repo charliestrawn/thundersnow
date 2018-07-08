@@ -8,33 +8,11 @@ import time
 import unittest
 
 from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
 from thundersnow import app, db
-from thundersnow.models import Member, Payment, User, Week
-from thundersnow.utils import split_json_date
+from thundersnow.models import Payment, User
 
 
-MIGRATE = Migrate(app, db)
 MANAGER = Manager(app)
-
-# migrations
-MANAGER.add_command('db', MigrateCommand)
-
-
-@MANAGER.command
-def create_db():
-    """
-    Creates the database tables.
-    """
-    db.create_all()
-
-
-@MANAGER.command
-def drop_db():
-    """
-    Drops the database tables.
-    """
-    db.drop_all()
 
 
 @MANAGER.command
@@ -45,7 +23,6 @@ def create_admin():
 
     The Admin flag was originally created to hide new features.
     """
-
     admin_email = os.getenv('ADMIN_EMAIL')
     admin_password = os.getenv('ADMIN_PASSWORD')
     if admin_email and admin_password:
@@ -63,52 +40,6 @@ def create_admin():
         db.session.add(user)
 
     db.session.commit()
-
-
-@MANAGER.command
-@MANAGER.option('-f', '--file', help='file to read data in from')
-def create_data(file_name='backup.json'):
-    """
-    Seed the database from a backup file. Pass in file name to the
-    command with -f
-
-    $ python manage.py create_data -f some_json_file.json
-
-    """
-    # TODO: this should optionally support an s3 bucket.
-    with open(file_name) as json_file:
-        payments = json.load(json_file)
-        for payment in payments:
-            # May have to catch something here if dates aren't formatted right
-            month, day, year = split_json_date(payment.get('date'))
-
-            week = Week.query.filter_by(
-                month=month, day=day, year=year
-            ).first()
-            if not week:
-                week = Week(month=month, day=day, year=year)
-
-            name = payment.get('name')
-            member = Member.query.filter_by(name=name).first()
-            if not member:
-                member = Member(payment.get('name'))
-
-            check_number = payment.get('checkNumber')
-            if not check_number:
-                check_number = payment.get('check_number')
-
-            # Convert to cents
-            amount = payment.get('amount') * 100
-            payment = Payment(
-                check_number=check_number, amount=amount, entered_by=1
-            )
-            week.payments.append(payment)
-            member.payments.append(payment)
-
-            db.session.add(week)
-            db.session.add(member)
-            db.session.add(payment)
-        db.session.commit()
 
 
 @MANAGER.command

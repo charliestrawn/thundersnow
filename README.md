@@ -16,10 +16,14 @@ Make sure you have Python 3 and Postgres installed. I'd also recommend [virtuale
 - `mkvirtualenv thundersnow -a $PWD`
 - `pip install -Ur requirements_dev.txt`
 - export environment varialbes (for convenience I like to save these in `~/.virtualenvs/thundersnow/bin/postactivate` so they sourced every time I `workon thundersnow`)
-    - export DATABASE_URL="postgresql://localhost/thundersnow"
-    - export ADMIN_EMAIL="test@test.com"
-    - export ADMIN_PASSWORD="testytest"
-    - export SECRET_KEY="myprecious"
+
+```bash
+export DATABASE_URL="postgresql://localhost/thundersnow"
+export ADMIN_EMAIL="test@test.com"
+export ADMIN_PASSWORD="testytest"
+export SECRET_KEY="myprecious"
+```
+
 - Create the database `python manage.py create_db`
 - Create your user `python manage.py create_admin`
 - Start the app `python manage.py runserver`
