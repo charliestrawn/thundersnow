@@ -16,17 +16,12 @@
                     access: { restricted: false }
                 })
                 .when('/logout', {
-                    controller: 'logoutController',
+                    controller: 'LogoutController',
                     access: { restricted: true }
                 })
                 .when('/members', {
                     templateUrl: '/static/js/template/members.html',
                     controller: 'MemberController',
-                    access: { restricted: true }
-                })
-                .when('/members/similar', {
-                    templateUrl: '/static/js/template/members-similar.html',
-                    controller: 'MembersController',
                     access: { restricted: true }
                 })
                 .when('/reports', {

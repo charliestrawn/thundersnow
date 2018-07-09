@@ -1,16 +1,20 @@
+import itertools
 import json
+import os
 
 from flask import (
-    Blueprint, redirect, render_template_string, request, url_for
+    Blueprint, redirect, render_template,
+    render_template_string, request, url_for
 )
+import pylev
+import requests
 from sqlalchemy.sql import func
 
-from thundersnow import db
-from thundersnow.models import Member, Payment, Week
+from thundersnow.models import db, Member, Payment, Week
 from thundersnow.utils import admin_required, split_json_date
 
 
-admin_blueprint = Blueprint('admin', __name__)
+admin_blueprint = Blueprint('admin', __name__, template_folder='templates')
 
 
 @admin_blueprint.route('/restore', methods=['GET', 'POST'])
@@ -72,3 +76,49 @@ def stats():
     )
     amount = qry.first()[0] / 100
     return render_template_string("Total: ${{amount}}", amount=amount)
+
+
+@admin_blueprint.route('/export')
+@admin_required
+def get_export():
+    breeze_url = os.getenv('BREEZE_API_URL')
+    breeze_api_key = os.getenv('BREEZE_API_KEY')
+    headers = {'Api-Key': breeze_api_key, 'Content-Type': 'application/json'}
+    resp = requests.get(f'{breeze_url}/people', headers=headers)
+    json_resp = resp.json()
+    members = [m.serialize for m in Member.query.order_by(Member.name).all()]
+
+    possible_matches = {}
+    unmatched = {}
+    for mem in json_resp:
+        for m in members:
+            breeze_name = f'{mem["last_name"]}, {mem["first_name"]}'
+            if breeze_name in m['name'] and \
+                    m['id'] not in possible_matches.keys():
+                possible_matches[m['id']] = {
+                    'name': m['name'],
+                    'breeze_last_name': mem['last_name'],
+                    'breeze_first_name': mem['first_name'],
+                    'breeze_id': mem['id'],
+                    'exact_match': breeze_name == m['name']
+                }
+            else:
+                unmatched[m['id']] = {'name': m['name']}
+
+    return render_template(
+        'export.html', matches=possible_matches, unmatched=unmatched
+    )
+
+
+@admin_blueprint.route('/similar-members')
+@admin_required
+def get_similar_members():
+    members = Member.query.all()
+    similar_members = {'a': [], 'b': []}
+    for left, right in itertools.combinations(members, 2):
+        distance = pylev.levenshtein(left.name, right.name)
+        if distance < 3:
+            similar_members['a'].append(left.serialize)
+            similar_members['b'].append(right.serialize)
+
+    return render_template('similar.html', similar_members=similar_members)
