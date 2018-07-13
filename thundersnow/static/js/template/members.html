@@ -1,8 +1,49 @@
-<ul id="members">
-<li ng-repeat="m in members | orderBy:'name':false">
-    <a ng-click="loadMember(m.id)">{{ m.name }}</a>
-</li>
-</ul>
-<div id="member" ng-if="member">
-    <h1>{{member.name}}</h1>
+<header class="navbar navbar-default navber-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Payment Reporter</a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="" data-toggle="dropdown">Generate Report<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/#/report/weekly/{{ week | encodeURIComponent }}">For This Week</a></li>
+                            <li><a href="/#/report/annual/2014">For 2014</a></li>
+                            <li><a href="/#/report/annual/2015">For 2015</a></li>
+                            <li><a href="/#/report/annual/2016">For 2016</a></li>
+                            <li><a href="/#/report/annual/2017">For 2017</a></li>
+                            <li><a href="/#/report/annual/2018">For 2018</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li ng-if="isAdmin()">
+                        <a href="" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-cog" style="cursor:pointer">
+                            </span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/#/users">Manage Users</a></li>
+                            <li><a href="/#/members">Manage Members</a></li>
+                            <li><a href="/#/weeks">Manage Weeks</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/#/logout">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+<div class="container">
+<table id="members" class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="m in members | orderBy:'name':false">
+            <td ng-click="loadMember(m.id)">{{ m.name }}</td>
+        </tr>
+    </tbody>
+</table>
 </div>

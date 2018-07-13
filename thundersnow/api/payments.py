@@ -4,8 +4,7 @@ import time
 import boto3
 from flask import Blueprint, jsonify, request, session
 
-from thundersnow import db
-from thundersnow.models import Member, Payment, Week
+from thundersnow.models import db, Member, Payment, Week
 from thundersnow.utils import login_required, split_json_date
 
 payments_blueprint = Blueprint('payment', __name__)
@@ -29,6 +28,9 @@ def api_payments():
                 month=month, day=day, year=year
             ).first()
             pmts = Payment.query.filter_by(week=week).all()
+            return jsonify([p.serialize for p in pmts])
+        elif request.args.get('member_id'):
+            pmts = Payment.query.filter_by(member_id=request.args['member_id'])
             return jsonify([p.serialize for p in pmts])
 
         return jsonify([])
@@ -72,14 +74,18 @@ def api_payments():
 @login_required
 def api_payment(payment_id):
     """
-    Get a payment by it's id.
+
     """
     payment = Payment.query.filter_by(id=payment_id).first_or_404()
 
     if request.method == 'PUT':
         # TODO: lookup date as well, how do we change that?
-        setattr(payment, 'check_number', request.json.get('checkNumber'))
-        setattr(payment, 'amount', request.json.get('amount'))
+        if request.json.get('checkNumber'):
+            setattr(payment, 'check_number', request.json['checkNumber'])
+        if request.json.get('amount'):
+            setattr(payment, 'amount', request.json['amount'])
+        if request.json.get('member_id'):
+            setattr(payment, 'member_id', request.json['member_id'])
         db.session.add(payment)
         db.session.commit()
         return jsonify(payment.serialize)

@@ -1,10 +1,7 @@
-import itertools
-
 from flask import Blueprint, jsonify, request
-import pylev
 
-from thundersnow.models import Member, Payment, Week
-from thundersnow.utils import admin_required, login_required
+from thundersnow.models import db, Member
+from thundersnow.utils import login_required
 
 
 members_blueprint = Blueprint('members', __name__)
@@ -17,42 +14,17 @@ def members():
     return jsonify(members)
 
 
-@members_blueprint.route('/members/<int:id>')
+@members_blueprint.route('/members/<int:member_id>', methods=['GET', 'DELETE'])
 @login_required
-def member(id):
-    member = Member.query.filter_by(id=id).first_or_404()
-    return jsonify(member.serialize)
-
-
-@members_blueprint.route('/members/<int:id>/payments')
-@login_required
-def member_payments(id):
-    q = Member.id == id
-    if request.args.get('year') and request.args['year'] != 'undefined':
-        pmts = Payment.query \
-            .join(Week).filter(Week.year == request.args['year']) \
-            .join(Member).filter(Member.id == id).all()
-        if len(pmts) < 1:
-            return jsonify([])
-    else:
-        pmts = Payment.query.join(Member).join(Week).filter(q).all()
-    return jsonify([p.serialize for p in pmts])
-
-
-@members_blueprint.route('/members/similar')
-@login_required
-@admin_required
-def find_similar_names():
+def api_member(member_id):
     """
-    Find members with similar names. This is used to fix
-    near duplicates like Last, First vs Last,First
+    Get a member by id.
     """
-    names = [str(m) for m in Member.query.all()]
-    similar_names = {}
-    for left, right in itertools.combinations(names, 2):
-        distance = pylev.levenshtein(left, right)
-        if distance < 3:
-            similar_names['a'].append(left)
-            similar_names['b'].append(right)
+    member = Member.query.filter_by(id=member_id).first_or_404()
+    if request.method == 'GET':
+        return jsonify(member.serialize)
 
-    return jsonify(similar_names)
+    elif request.method == 'DELETE':
+        db.session.delete(member)
+        db.session.commit()
+        return "Successfully deleted member", 204
