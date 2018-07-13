@@ -118,7 +118,37 @@ def get_similar_members():
     for left, right in itertools.combinations(members, 2):
         distance = pylev.levenshtein(left.name, right.name)
         if distance < 3:
-            similar_members['a'].append(left.serialize)
-            similar_members['b'].append(right.serialize)
+            left_json = left.serialize
+            left_json['pmts'] = len(left.payments)
+            similar_members['a'].append(left_json)
+            right_json = right.serialize
+            right_json['pmts'] = len(right.payments)
+            similar_members['b'].append(right_json)
 
-    return render_template('similar.html', similar_members=similar_members)
+    return render_template(
+        'similar.html',
+        similar_members=similar_members,
+        count=len(similar_members['a'])
+    )
+
+
+@admin_blueprint.route('/fix-similar', methods=['POST'])
+@admin_required
+def fix_similar_members():
+    old_id = request.json['old_member_id']
+    payments = Payment.query.filter_by(member_id=old_id).all()
+    member = Member.query.filter_by(id=old_id).first()
+
+    if not payments or not member:
+        return 'Nothing to do', 200
+
+    removed = len(payments)
+    for payment in payments:
+        setattr(payment, 'member_id', request.json['new_member_id'])
+        db.session.add(payment)
+        db.session.commit()
+
+    db.session.delete(member)
+    db.session.commit()
+
+    return f'Updated {removed} payments.', 200

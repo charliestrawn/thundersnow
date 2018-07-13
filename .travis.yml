@@ -4,7 +4,7 @@ python:
 install:
 - pip install -r requirements_dev.txt
 script:
-- flake8  --exclude=migrations
+- flake8 --exclude=migrations
 - python manage.py test
 deploy:
   provider: heroku
