@@ -14,9 +14,11 @@
 lib/external
 
 settingslocal.py
+venv
 
 bower_components
 **/*.db
 *.swp
 secrets.sh
+secrets
 backup.json
