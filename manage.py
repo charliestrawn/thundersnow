@@ -9,7 +9,8 @@ import unittest
 
 from flask_script import Manager
 from thundersnow import app, db
-from thundersnow.models import Payment, User
+from thundersnow.models import Member, Payment, User, Week
+from thundersnow.utils import split_json_date
 
 
 MANAGER = Manager(app)
@@ -60,6 +61,45 @@ def backup_data(file_name=None):
 
     # Printing the filename lets us store it as a variable to pass into s3 cp
     print(file_name)
+
+
+@MANAGER.command
+@MANAGER.option('-f', '--file', help='file to read data in from')
+def restore(file_name='backup.json'):
+    with open(file_name) as f:
+        payments = json.load(f)
+        for payment in payments:
+            # May have to catch something here if dates aren't formatted right
+            month, day, year = split_json_date(payment.get('date'))
+
+            week = Week.query.filter_by(
+                month=month, day=day, year=year
+            ).first()
+            if not week:
+                week = Week(month=month, day=day, year=year)
+
+            name = payment.get('name')
+            member = Member.query.filter_by(name=name).first()
+            if not member:
+                member = Member(payment.get('name'))
+
+            check_number = payment.get('checkNumber')
+            if not check_number:
+                check_number = payment.get('check_number')
+
+            # Convert to cents
+            amount = payment.get('amount') * 100
+            payment = Payment(
+                check_number=check_number, amount=amount, entered_by=1
+            )
+            week.payments.append(payment)
+            member.payments.append(payment)
+
+            db.session.add(week)
+            db.session.add(member)
+            db.session.add(payment)
+            db.session.commit()
+            print('Added payment.')
 
 
 @MANAGER.command
