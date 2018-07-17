@@ -62,6 +62,7 @@ def restore_data_from_backup():
 
 
 @admin_blueprint.route('/stats')
+@admin_required
 def stats():
     qry = db.session.query(
         func.sum(Payment.amount)
