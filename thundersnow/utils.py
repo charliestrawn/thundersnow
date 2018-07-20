@@ -29,15 +29,14 @@ def admin_required(func):
     Admin required decorator functions. Also wraps login_required.
     This is used for user management and hiding incomplete featrues.
     """
+    @login_required
     @wraps(func)
     def wrap(*args, **kwargs):
         """
         Check to see if user is an admin within the session.
         """
-        admin = 'admin' in session and session['admin'] is True
-        if 'logged_in' in session and admin:
+        if 'admin' in session and session['admin'] is True:
             return func(*args, **kwargs)
-
         abort(401)
     return wrap
 

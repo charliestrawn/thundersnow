@@ -37,11 +37,13 @@
 <table id="members" class="table table-striped">
     <thead>
         <tr>
+            <th>ID</th>
             <th>Name</th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="m in members | orderBy:'name':false">
+            <td>{{ m.id }}</td>
             <td ng-click="loadMember(m.id)">{{ m.name }}</td>
         </tr>
     </tbody>
