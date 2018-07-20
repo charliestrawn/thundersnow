@@ -70,6 +70,7 @@ def restore_data_from_backup():
 
 
 @admin_blueprint.route('/stats')
+@admin_required
 def stats():
     qry = db.session.query(
         func.sum(Payment.amount)
@@ -86,28 +87,40 @@ def get_export():
     headers = {'Api-Key': breeze_api_key, 'Content-Type': 'application/json'}
     resp = requests.get(f'{breeze_url}/people', headers=headers)
     json_resp = resp.json()
-    members = [m.serialize for m in Member.query.order_by(Member.name).all()]
+    members = Member.query.order_by(Member.name).all()
 
-    possible_matches = {}
-    unmatched = {}
-    for mem in json_resp:
-        for m in members:
+    data = {}
+    match_ids = []
+    for m in members:
+        # if we've already saved the ID, no need to export
+        if m.breeze_id:
+            continue
+
+        data[m.id] = {'name': m.name, 'payments': len(m.payments)}
+        for mem in json_resp:
             breeze_name = f'{mem["last_name"]}, {mem["first_name"]}'
-            if breeze_name in m['name'] and \
-                    m['id'] not in possible_matches.keys():
-                possible_matches[m['id']] = {
-                    'name': m['name'],
+            if breeze_name in m.name and m.id not in match_ids:
+                match_ids.append(m.id)
+                data[m.id].update({
                     'breeze_last_name': mem['last_name'],
                     'breeze_first_name': mem['first_name'],
                     'breeze_id': mem['id'],
-                    'exact_match': breeze_name == m['name']
-                }
-            else:
-                unmatched[m['id']] = {'name': m['name']}
+                    'exact_match': breeze_name == m.name
+                })
 
-    return render_template(
-        'export.html', matches=possible_matches, unmatched=unmatched
-    )
+    return render_template('export.html', members=data)
+
+
+@admin_blueprint.route('/save-breeze-id', methods=['POST'])
+@admin_required
+def save_breeze_id():
+    member_id = request.json['member_id']
+    member = Member.query.filter_by(id=member_id).first()
+    setattr(member, 'breeze_id', request.json['breeze_id'])
+    db.session.add(member)
+    db.session.commit()
+
+    return f'Updated member.', 200
 
 
 @admin_blueprint.route('/similar-members')
@@ -117,7 +130,7 @@ def get_similar_members():
     similar_members = {'a': [], 'b': []}
     for left, right in itertools.combinations(members, 2):
         distance = pylev.levenshtein(left.name, right.name)
-        if distance < 3:
+        if distance < 4:
             left_json = left.serialize
             left_json['pmts'] = len(left.payments)
             similar_members['a'].append(left_json)

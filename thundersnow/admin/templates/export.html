@@ -31,6 +31,8 @@
         </div>
       </header>
     <div class="container">
+      <div class="alert"></div>
+      <h2>Save Breeze IDs</h2>
       <table class="table table-striped">
         <thead>
             <tr>
@@ -39,46 +41,48 @@
               <th>SCP Name</th>
               <th>Breeze Name</th>
               <th>Breeze ID</th>
+              <th>Payments</th>
               <th></th>
             </tr>
         </thead>
         <tbody>
-          {% for k, v in matches.items() %}
-            <tr {% if v['exact_match'] %}class="success"{% endif %}>
+          {% for k, v in members.items() %}
+            <tr {% if v['exact_match'] %}class="success"{% elif not v['breeze_id'] %}class="danger"{% endif %}>
               <!--Create form to add breeze id-->
               <td>{{ loop.index }}</td>
-              <td>{{ k }}</td>
+              <td class="member-id">{{ k }}</td>
               <td>{{ v['name'] }}</td>
-              <td>{{ v['breeze_last_name'] }}, {{ v['breeze_first_name'] }}</td>
-              <td>{{ v['breeze_id'] }}</td>
+              <td>{% if v['breeze_id'] %}{{ v['breeze_last_name'] }}, {{ v['breeze_first_name'] }}{% endif %}</td>
+              <td class="breeze-id">{{ v['breeze_id'] }}</td>
+              <td>{{ v['payments'] }}</td>
+              <td>{% if v['breeze_id'] %}<button class="btn btn-primary save">Save</button>{% endif %}</td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
-      <table class="table table-striped">
-          <thead>
-              <tr>
-                <th>#</th>
-                <th>ID</th>
-                <th>SCP Name</th>
-                <th></th>
-              </tr>
-          </thead>
-          <tbody>
-            {% for k, v in unmatched.items() %}
-              <tr>
-                <!--Create form to add breeze id-->
-                <td>{{ loop.index }}</td>
-                <td>{{ k }}</td>
-                <td>{{ v['name'] }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
     </div>
     <!-- scripts -->
     <script src="//code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.2/lodash.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(function(){
+        $(".save").click(function(e) {
+          row = $(this).closest('tr');
+          a = parseInt(row.children('.member-id').text());
+          b = parseInt(row.children('.breeze-id').text());
+          $.ajax({
+            type: 'POST',
+            url: '/admin/save-breeze-id',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({"member_id": a, "breeze_id": b}),
+            success: function (data) {
+              $('.alert').text(data).addClass('alert-success');
+              row.fadeOut();
+            }
+          });
+        });
+    });
+    </script>
   </body>
 </html>
