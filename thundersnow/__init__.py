@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, session, url_for
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
@@ -40,3 +40,10 @@ def index():
     Main route for serving the index page.
     """
     return app.send_static_file('index.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    session.pop('admin', None)
+    return redirect(url_for('index'))

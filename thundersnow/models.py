@@ -109,6 +109,15 @@ class Member(db.Model):
             'breeze_id': self.breeze_id
         }
 
+    @property
+    def serialize_with_payments(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'breeze_id': self.breeze_id,
+            'payments': [p.serialize for p in self.payments]
+        }
+
 
 class Payment(db.Model):
     """
@@ -141,7 +150,8 @@ class Payment(db.Model):
             'checkNumber': self.check_number,
             'amount': float(self.amount / 100),
             'name': self.member.name,
-            'entered_by': self.entered_by
+            'entered_by': self.entered_by,
+            'breeze_member_id': self.member.breeze_id
         }
 
 

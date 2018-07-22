@@ -3,7 +3,7 @@ import json
 import os
 
 from flask import (
-    Blueprint, redirect, render_template,
+    Blueprint, jsonify, redirect, render_template,
     render_template_string, request, url_for
 )
 import pylev
@@ -59,6 +59,21 @@ def restore_data_from_backup():
         return redirect(url_for('index'))
     else:
         return render_template('restore.html')
+
+
+@admin_blueprint.route('/payments')
+@admin_required
+def all_payments():
+    if request.args.get('year'):
+        q = Week.year == request.args['year']
+        pmts = Payment.query.join(Week).filter(q).all()
+        return jsonify([p.serialize for p in pmts])
+    if request.args.get('with_breeze_id'):
+        q = Member.breeze_id.isnot(None)
+        pmts = Payment.query.join(Member).filter(q).all()
+        return jsonify([p.serialize for p in pmts])
+
+    return jsonify([p.serialize for p in Payment.query.all()])
 
 
 @admin_blueprint.route('/stats')
