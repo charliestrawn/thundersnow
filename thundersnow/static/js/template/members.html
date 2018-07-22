@@ -34,17 +34,24 @@
         </div>
     </header>
 <div class="container">
+<h2>{{ members.length }} Members</h2>
 <table id="members" class="table table-striped">
     <thead>
         <tr>
             <th>ID</th>
             <th>Name</th>
+            <th># Payments</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="m in members | orderBy:'name':false">
             <td>{{ m.id }}</td>
             <td ng-click="loadMember(m.id)">{{ m.name }}</td>
+            <td>{{ m.payments.length }}</td>
+            <td><button class="btn btn-warning" ng-click="fixMember(m)">New Id</button></td>
+            <td><button class="btn btn-danger" ng-click="del(m)"><span class="glyphicon glyphicon-remove" style="color:whitesmoke;cursor:pointer"></span> </button></td>
         </tr>
     </tbody>
 </table>
