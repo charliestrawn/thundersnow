@@ -105,8 +105,10 @@ def get_export():
 
         data[m.id] = {'name': m.name, 'payments': len(m.payments)}
         for mem in json_resp:
+            name = m.name.split(',')
+            first_name_match = len(name) > 1 and mem["first_name"] in name[1]
             breeze_name = f'{mem["last_name"]}, {mem["first_name"]}'
-            if breeze_name in m.name and m.id not in match_ids:
+            if mem["last_name"] in name[0] and first_name_match and m.id not in match_ids: # noqa e501
                 match_ids.append(m.id)
                 data[m.id].update({
                     'breeze_last_name': mem['last_name'],
@@ -134,22 +136,19 @@ def save_breeze_id():
 @admin_required
 def get_similar_members():
     members = Member.query.all()
-    similar_members = {'a': [], 'b': []}
+    similar = {'a': [], 'b': []}
     for left, right in itertools.combinations(members, 2):
         distance = pylev.levenshtein(left.name, right.name)
         if distance < 4:
             left_json = left.serialize
             left_json['pmts'] = len(left.payments)
-            similar_members['a'].append(left_json)
+            similar['a'].append(left_json)
+
             right_json = right.serialize
             right_json['pmts'] = len(right.payments)
-            similar_members['b'].append(right_json)
+            similar['b'].append(right_json)
 
-    return render_template(
-        'similar.html',
-        similar_members=similar_members,
-        count=len(similar_members['a'])
-    )
+    return render_template('similar.html', similar_members=similar)
 
 
 @admin_blueprint.route('/fix-similar', methods=['POST'])
