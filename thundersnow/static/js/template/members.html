@@ -40,6 +40,7 @@
         <tr>
             <th>ID</th>
             <th>Name</th>
+            <th>Breeze ID</th>
             <th># Payments</th>
             <th></th>
             <th></th>
@@ -49,6 +50,7 @@
         <tr ng-repeat="m in members | orderBy:'name':false">
             <td>{{ m.id }}</td>
             <td ng-click="loadMember(m.id)">{{ m.name }}</td>
+            <td>{{ m.breeze_id }}</td>
             <td>{{ m.payments.length }}</td>
             <td><button class="btn btn-warning" ng-click="fixMember(m)">New Id</button></td>
             <td><button class="btn btn-danger" ng-click="del(m)"><span class="glyphicon glyphicon-remove" style="color:whitesmoke;cursor:pointer"></span> </button></td>
