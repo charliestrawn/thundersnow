@@ -59,7 +59,7 @@
             </div>
             <div class="form-group" ng-class="{ 'has-error' : addForm.name.$invalid && !addForm.name.$pristine }">
                 <label class="control-label">Name</label>
-                <input type="text" class="form-control" name="name" ng-model="payment.name" uib-typeahead="name for name in names | filter:$viewValue | limitTo:8" required>
+                <input type="text" class="form-control" name="name" ng-model="payment.name" uib-typeahead="name for name in names | filter:$viewValue:startsWith | limitTo:8" required>
                 <p ng-show="addForm.name.$invalid && !addForm.name.$pristine" class="help-block">Name is required.</p>
             </div>
             <div class="form-group" ng-class="{ 'has-error' : addForm.checkNumber.$invalid && !addForm.checkNumber.$pristine }">
