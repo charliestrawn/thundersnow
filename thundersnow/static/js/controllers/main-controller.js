@@ -87,6 +87,10 @@
                $location.path('/login');
            });
         };
+
+        $scope.startsWith = function(state, viewValue) {
+            return state.substr(0, viewValue.length).toLowerCase() == viewValue.toLowerCase();
+        };
     }]);
 
     app.filter('encodeURIComponent', function() {
