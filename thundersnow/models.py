@@ -132,6 +132,7 @@ class Payment(db.Model):
     member_id = db.Column(db.Integer, ForeignKey('members.id'))
     week_id = db.Column(db.Integer, ForeignKey('weeks.id'))
     entered_by = db.Column(db.Integer, ForeignKey('users.id'))
+    breeze_id = db.Column(db.Integer)
 
     def __init__(self, check_number, amount, entered_by):
         self.check_number = check_number
@@ -151,7 +152,8 @@ class Payment(db.Model):
             'amount': float(self.amount / 100),
             'name': self.member.name,
             'entered_by': self.entered_by,
-            'breeze_member_id': self.member.breeze_id
+            'breeze_member_id': self.member.breeze_id,
+            'breeze_id': self.breeze_id
         }
 
 
