@@ -18,7 +18,7 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li ng-if="isAdmin()">
+                    <li>
                         <a href="" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-cog" style="cursor:pointer">
                             </span></a>
@@ -34,28 +34,26 @@
         </div>
     </header>
 <div class="container">
-<h2>{{ members.length }} Members</h2>
-<table id="members" class="table table-striped">
+<h2><a href="/#/members" class="glyphicon glyphicon-chevron-left">    </a>Payments for {{ member.name }}</h2>
+<table id="payments" class="table table-striped">
     <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
+            <th>Check #</th>
+            <th>Amount</th>
             <th>Breeze ID</th>
-            <th># Payments</th>
-            <th></th>
             <th></th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="m in members | orderBy:'name':false">
-            <td>{{ m.id }}</td>
-            <td ng-click="loadMember(m.id)">{{ m.name }}</td>
-            <td>{{ m.breeze_id }}</td>
-            <td><a href="/#/members/{{m.id}}/payments">{{ m.payments.length }}</a></td>
-            <td><button class="btn btn-warning" ng-click="fixMember(m)">New Id</button></td>
-            <td ng-click="updateMember(m)"><button class="btn btn-default"><span class="glyphicon glyphicon-pencil" style="cursor:pointer"></span></button></td>
-            <td ng-click="del(m)"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" style="color:whitesmoke;cursor:pointer"></span> </button></td>
+        <tr ng-repeat="p in payments ">
+            <td>{{ p.id }}</td>
+            <td>{{ p.checkNumber }}</td>
+            <td>{{ p.amount }}</td>
+            <td>{{ p.breeze_id }}</td>
+            <td ng-click="updateMember(p)"><button class="btn btn-default"><span class="glyphicon glyphicon-pencil" style="cursor:pointer"></span></button></td>
+            <td ng-click="del(p)"><button class="btn btn-danger"><span class="glyphicon glyphicon-remove" style="color:whitesmoke;cursor:pointer"></span> </button></td>
         </tr>
     </tbody>
 </table>

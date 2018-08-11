@@ -21,7 +21,6 @@ def api_payments():
             q = Week.year == request.args['year']
             pmts = Payment.query.join(Week).filter(q).all()
             return jsonify([p.serialize for p in pmts])
-
         elif request.args.get('week') and request.args['week'] != 'undefined':
             month, day, year = split_json_date(request.args['week'])
             week = Week.query.filter_by(
@@ -32,7 +31,6 @@ def api_payments():
         elif request.args.get('member_id'):
             pmts = Payment.query.filter_by(member_id=request.args['member_id'])
             return jsonify([p.serialize for p in pmts])
-
         return jsonify([])
 
     elif request.method == 'POST':
@@ -40,12 +38,10 @@ def api_payments():
         week = Week.query.filter_by(month=month, day=day, year=year).first()
         if not week:
             week = Week(month=month, day=day, year=year)
-
         name = request.json.get('name')
         member = Member.query.filter_by(name=name).first()
         if not member:
             member = Member(request.json.get('name'))
-
         # Legacy support
         check_number = request.json.get('checkNumber')
         if not check_number:
