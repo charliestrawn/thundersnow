@@ -31,7 +31,7 @@
         </div>
       </header>
     <div class="container">
-      <div class="alert"></div>
+      <div id="alert"></div>
       <h2>{{ members|length }} Save Breeze IDs</h2>
       <table class="table table-striped">
         <thead>
@@ -77,7 +77,7 @@
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify({"member_id": a, "breeze_id": b}),
             success: function (data) {
-              $('.alert').text(data).addClass('alert-success');
+              $('#alert').text(data).addClass('alert-success');
               row.fadeOut();
             }
           });

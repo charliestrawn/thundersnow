@@ -15,8 +15,8 @@
             delete: function (id) {
                 return $http.delete('/api/members/' + id);
             },
-            fixMember: function (id, new_id) {
-                return $http.put('/api/members/' + id, {'new_member_id': new_id});
+            update: function (id, updateObj) {
+                return $http.put('/api/members/' + id, updateObj);
             }
         };
     }]);

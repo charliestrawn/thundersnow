@@ -78,9 +78,8 @@
         </form>
     </div>
     <div class="col-sm-8">
-        <div class="row">
-            <h3 class="pull-left">Payments for {{ week }}</h3>
-        </div>
+        <h3 class="pull-left">Payments for {{ week }}</h3>
+        <h3 class="pull-right"><a href="/admin/export/payments?week={{week}}" class="btn btn-primary pull-right">Export&nbsp;<span class="glyphicon glyphicon-export"></span></a></h3>
         <table class="table table-striped">
             <thead>
                 <th>Name</th>

@@ -24,6 +24,11 @@
                     controller: 'MemberController',
                     access: { restricted: true }
                 })
+                .when('/members/:id/payments', {
+                    templateUrl: '/static/js/template/member-payments.html',
+                    controller: 'MemberController',
+                    access: { restricted: true }
+                })
                 .when('/reports', {
                     templateUrl: '/static/js/template/reports.html',
                     controller: 'ReportController',

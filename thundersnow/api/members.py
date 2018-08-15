@@ -31,16 +31,17 @@ def api_member(member_id):
         db.session.commit()
         return "Successfully deleted member", 204
     elif request.method == 'PUT':
-        if request.json.get('new_member_id'):
-            member = Member.query.filter_by(id=member_id).first()
-
+        if request.json.get('id'):
             if not member.payments:
                 return 'Nothing to do', 200
-
             for payment in member.payments:
-                setattr(payment, 'member_id', request.json['new_member_id'])
+                setattr(payment, 'member_id', request.json['id'])
                 db.session.add(payment)
                 db.session.commit()
-
             db.session.delete(member)
             db.session.commit()
+        if request.json.get('name'):
+            setattr(member, 'name', request.json['name'])
+            db.session.add(member)
+            db.session.commit()
+            return jsonify(member.serialize)

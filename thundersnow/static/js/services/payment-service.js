@@ -18,7 +18,7 @@
                 }
             },
             getForMember: function (member_id) {
-                return $http.get('/api/member/' + member_id + '/payments');
+                return $http.get('/api/payment?member_id=' + member_id);
             },
             getForMemberAndYear: function (member_id, year) {
                 return $http.get('/api/member/' + member_id + '/payments?year=' + year);
