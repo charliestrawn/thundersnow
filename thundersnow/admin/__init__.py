@@ -86,9 +86,9 @@ def stats():
     return render_template_string("Total: ${{amount}}", amount=amount)
 
 
-@admin_blueprint.route('/export')
+@admin_blueprint.route('/export/members')
 @admin_required
-def get_export():
+def get_export_members():
     breeze_url = os.getenv('BREEZE_API_URL')
     breeze_api_key = os.getenv('BREEZE_API_KEY')
     headers = {'Api-Key': breeze_api_key, 'Content-Type': 'application/json'}
@@ -117,7 +117,23 @@ def get_export():
                     'exact_match': breeze_name == m.name
                 })
 
-    return render_template('export.html', members=data)
+    return render_template('export-members.html', members=data)
+
+
+@admin_blueprint.route('/export/payments')
+@admin_required
+def get_export_payments():
+    payments = []
+    if request.args.get('week') and request.args['week'] != 'undefined':
+        month, day, year = split_json_date(request.args['week'])
+        week = Week.query.filter_by(
+            month=month, day=day, year=year
+        ).first()
+        payments = Payment.query.filter_by(week=week).all()
+
+    return render_template(
+        'export-payments.html', payments=payments, week=week
+    )
 
 
 @admin_blueprint.route('/save-breeze-id', methods=['POST'])
@@ -135,11 +151,12 @@ def save_breeze_id():
 @admin_blueprint.route('/similar-members')
 @admin_required
 def get_similar_members():
+    allowed_distance = int(request.args.get('distance')) or 4
     members = Member.query.all()
     similar = {'a': [], 'b': []}
     for left, right in itertools.combinations(members, 2):
         distance = pylev.levenshtein(left.name, right.name)
-        if distance < 4:
+        if distance < allowed_distance:
             left_json = left.serialize
             left_json['pmts'] = len(left.payments)
             similar['a'].append(left_json)

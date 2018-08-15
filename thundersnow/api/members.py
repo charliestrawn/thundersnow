@@ -45,5 +45,3 @@ def api_member(member_id):
             db.session.add(member)
             db.session.commit()
             return jsonify(member.serialize)
-
-
