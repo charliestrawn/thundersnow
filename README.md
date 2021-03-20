@@ -3,7 +3,6 @@
 Simple Flask + Angular 1.4 app for tracking and reporting on weekly payments. I use this project to learn and experiment with different frontend and backend languages/frameworks/technologies, and the next iteration will likely be react/redux.
 
 ### TODOs
-- [ ] Refactor to use blueprints on the server
 - [ ] More unit tests
 - [ ] Add more TODOs
 
