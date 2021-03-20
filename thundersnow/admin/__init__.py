@@ -3,8 +3,13 @@ import json
 import os
 
 from flask import (
-    Blueprint, jsonify, redirect, render_template,
-    render_template_string, request, url_for
+    Blueprint,
+    jsonify,
+    redirect,
+    render_template,
+    render_template_string,
+    request,
+    url_for
 )
 import pylev
 import requests
@@ -145,7 +150,7 @@ def save_breeze_id():
     db.session.add(member)
     db.session.commit()
 
-    return f'Updated member.', 200
+    return 'Updated member.', 200
 
 
 @admin_blueprint.route('/similar-members')
